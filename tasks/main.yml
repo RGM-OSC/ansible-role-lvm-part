@@ -2,58 +2,9 @@
 # tasks file for ansible-role-lvm-mount
 # vim: bs=2 sw=2 expandtab:
 
-- name: test lvm_disk data structure is filled
-  fail:
-    msg: 'lvm_disk data structure *MUST* be filled out !'
+- name: execute role only id lvm_disk data structure is filled
+  include_tasks: lvm-mount.yml
+  tags:
+  - lvm
+  - mount
   when: lvm_disk is not defined
-
-- name: ensure disk is connected
-  stat:
-    path: "{{ lvm_disk.device }}"
-  register: stat_disk
-
-- name: disk missing error
-  fail:
-    msg: "Error Disk device {{ lvm_disk.device }} is missing!"
-  when: not stat_disk.stat.exists
-
-- name:  Create a new primary partition for LVM
-  parted:
-    label: "{{ parted_label }}"
-    device: "{{ lvm_disk.device }}"
-    number: 1
-    part_type: primary
-    flags: [ lvm ]
-    state: present
-
-- name: ensure LVM VG exists
-  lvg:
-    vg: "{{ lvm_disk.lvm_vg }}"
-    pvs: "{{ lvm_disk.device }}1"
-
-- name: create LVM LV
-  lvol:
-    vg: "{{ lvm_disk.lvm_vg }}"
-    lv: "{{ item.name }}"
-    size: "{{ item.size }}"
-  loop: "{{ lvm_disk.partitions }}"
-  loop_control:
-    label: "{{ item.name }}"
-
-- name: Format partitions if requested
-  filesystem:
-    dev: "/dev/{{ lvm_disk.lvm_vg }}/{{ item.name }}"
-    fstype: "{{ item.filesystem }}"
-  loop: "{{ lvm_disk.partitions }}"
-  loop_control:
-    label: "{{ item.name }}"
-
-- name: Mount up devices
-  mount:
-    path: "{{ item.mountpoint }}"
-    src: "/dev/{{ lvm_disk.lvm_vg }}/{{ item.name }}"
-    fstype: "{{ item.filesystem }}"
-    state: mounted
-  loop: "{{ lvm_disk.partitions }}"
-  loop_control:
-    label: "{{ item.name }}"
