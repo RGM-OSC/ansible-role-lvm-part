@@ -7,4 +7,4 @@
   tags:
   - lvm
   - mount
-  when: lvm_disk is not defined
+  when: lvm_disk is defined
