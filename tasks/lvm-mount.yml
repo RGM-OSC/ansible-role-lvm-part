@@ -6,16 +6,25 @@
   fail:
     msg: 'lvm_disk data structure *MUST* be filled out !'
   when: lvm_disk is not defined
+  tags:
+  - lvm
+  - mount
 
 - name: ensure disk is connected
   stat:
     path: "{{ lvm_disk.device }}"
   register: stat_disk
+  tags:
+  - lvm
+  - mount
 
 - name: disk missing error
   fail:
     msg: "Error Disk device {{ lvm_disk.device }} is missing!"
   when: not stat_disk.stat.exists
+  tags:
+  - lvm
+  - mount
 
 - name:  Create a new primary partition for LVM
   parted:
@@ -25,11 +34,13 @@
     part_type: primary
     flags: [ lvm ]
     state: present
+  tags: lvm
 
 - name: ensure LVM VG exists
   lvg:
     vg: "{{ lvm_disk.lvm_vg }}"
     pvs: "{{ lvm_disk.device }}1"
+  tags: lvm
 
 - name: create LVM LV
   lvol:
@@ -39,6 +50,7 @@
   loop: "{{ lvm_disk.partitions }}"
   loop_control:
     label: "{{ item.name }}"
+  tags: lvm
 
 - name: Format partitions if requested
   filesystem:
@@ -47,6 +59,7 @@
   loop: "{{ lvm_disk.partitions }}"
   loop_control:
     label: "{{ item.name }}"
+  tags: mount
 
 - name: Mount up devices
   mount:
@@ -57,3 +70,4 @@
   loop: "{{ lvm_disk.partitions }}"
   loop_control:
     label: "{{ item.name }}"
+  tags: mount
