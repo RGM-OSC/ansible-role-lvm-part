@@ -2,7 +2,7 @@
 # tasks file for ansible-role-lvm-mount
 # vim: bs=2 sw=2 expandtab:
 
-- name: execute role only id lvm_disk data structure is filled
+- name: execute role only if lvm_disk data structure is filled
   include_tasks: lvm-mount.yml
   tags:
   - lvm
