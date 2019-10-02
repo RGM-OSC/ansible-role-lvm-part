@@ -1,19 +1,23 @@
-Role Name
-=========
+Ansible role role-lvm-partitionner
+==========================
 
 A role to handle partitioning, VG & LV creation, formatting and mounting
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role is using lvm and parted ansibles modules. It requires the parted and lvm-tools system packages are available
+on target system but it does **not** install them by itself.
+
+So it's up to the calling playbook to ensure these prerequisites are filled.
+
 
 Role Variables
 --------------
 
 The role expects a complex data structure stored in a variable ```lvm_disk```:
 
-```
+```yaml
   lvm_disk:
     device: '/dev/sdb2'
     lvm_vg: 'vg_data'
@@ -34,9 +38,11 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
+```yaml
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+      - { role: username.rolename, x: 42 }
+```
 
 License
 -------
@@ -46,4 +52,4 @@ GPLv2
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Initial write by Eric Belhomme <ebelhomme@fr.scc.com> (2018), released under the terms of GPLv2 license
