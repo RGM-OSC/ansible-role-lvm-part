@@ -1,5 +1,5 @@
 ---
-# tasks file for ansible-role-lvm-mount
+# tasks file for role-lvm-partitionner
 # vim: bs=2 sw=2 expandtab:
 
 - name: test lvm_disk data structure is filled

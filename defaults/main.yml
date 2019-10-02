@@ -1,5 +1,5 @@
 ---
-# defaults file for ansible-role-lvm-mount
+# defaults file for role-lvm-partitionner
 # vim: bs=2 sw=2 expandtab:
 
 parted_label: 'msdos'
