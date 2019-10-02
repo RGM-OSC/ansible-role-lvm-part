@@ -11,6 +11,9 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
+The role expects a complex data structure stored in a variable ```lvm_disk```:
+
+```
   lvm_disk:
     device: '/dev/sdb2'
     lvm_vg: 'vg_data'
@@ -19,11 +22,12 @@ Role Variables
       mountpoint: '/var/log'
       filesystem: 'xfs'
       size: 10G
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+No dependencies for this role
 
 Example Playbook
 ----------------
