@@ -1,6 +1,13 @@
 ---
 # tasks file for role-lvm-partitionner
 # vim: bs=2 sw=2 expandtab:
+- name: install package dependencies
+  yum:
+    name:
+    - parted
+    - lvm
+    - xfsprogs
+    - e2fsprogs
 
 - name: test lvm_disk data structure is filled
   fail:
