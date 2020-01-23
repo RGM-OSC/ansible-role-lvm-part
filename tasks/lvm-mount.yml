@@ -41,12 +41,17 @@
     part_type: primary
     flags: [ lvm ]
     state: present
+  register: parted
   tags: lvm
+
+- name: fact
+  set_fact:
+    partnum: "{{ lvm_disk.device | regex_replace('^(.+\\d+n\\d+)$', '\\1p') }}{{ parted.partitions[0].num }}"
 
 - name: ensure LVM VG exists
   lvg:
     vg: "{{ lvm_disk.lvm_vg }}"
-    pvs: "{{ lvm_disk.device }}1"
+    pvs: "{{ partnum }}"
   tags: lvm
 
 - name: create LVM LV
