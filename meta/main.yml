@@ -1,5 +1,6 @@
-galaxy_info:
+galaxy_info: # noqa role-name schema[meta] meta-no-tags
   author: Eric Belhomme
+  role_name: role-lvm-partitionner
   description: Partition a disk, LVM VG & LV creation and formatting, and mountpoint
   company: SCC
 
@@ -16,7 +17,7 @@ galaxy_info:
   # - CC-BY
   license: GPLv2
 
-  min_ansible_version: 2.4
+  min_ansible_version: '2.4'
 
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:
@@ -27,7 +28,7 @@ galaxy_info:
   # this branch. If Travis integration is configured, only notifications for this
   # branch will be accepted. Otherwise, in all cases, the repo's default branch
   # (usually master) will be used.
-  #github_branch:
+  # github_branch:
 
   #
   # Provide a list of supported platforms, and for each platform a list of versions.
@@ -36,9 +37,9 @@ galaxy_info:
   # https://galaxy.ansible.com/api/v1/platforms/
   #
   platforms:
-  - name: EL
-    versions:
-    - 7
+    - name: EL
+      versions:
+        - 7
 
   galaxy_tags: ['LVM', 'partition', 'mount', 'format']
     # List tags for your role here, one per line. A tag is a keyword that describes

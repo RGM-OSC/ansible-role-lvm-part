@@ -1,61 +1,61 @@
 ---
 # tasks file for role-lvm-partitionner
 # vim: bs=2 sw=2 expandtab:
-- name: install package dependencies
-  yum:
+- name: 'Install package dependencies'
+  ansible.builtin.yum:
     name:
-    - parted
-    - lvm2
-    - xfsprogs
-    - e2fsprogs
+      - parted
+      - lvm2
+      - xfsprogs
+      - e2fsprogs
 
-- name: test lvm_disk data structure is filled
-  fail:
+- name: 'Test lvm_disk data structure is filled'
+  ansible.builtin.fail:
     msg: 'lvm_disk data structure *MUST* be filled out !'
   when: lvm_disk is not defined
   tags:
-  - lvm
-  - mount
+    - lvm
+    - mount
 
-- name: ensure disk is connected
-  stat:
+- name: 'Ensure disk is connected'
+  ansible.builtin.stat:
     path: "{{ lvm_disk.device }}"
   register: stat_disk
   tags:
-  - lvm
-  - mount
+    - lvm
+    - mount
 
-- name: disk missing error
-  fail:
+- name: 'Disk missing error'
+  ansible.builtin.fail:
     msg: "Error Disk device {{ lvm_disk.device }} is missing!"
   when: not stat_disk.stat.exists
   tags:
-  - lvm
-  - mount
+    - lvm
+    - mount
 
-- name:  Create a new primary partition for LVM
-  parted:
+- name: 'Create a new primary partition for LVM'
+  community.general.parted:
     label: "{{ parted_label }}"
     device: "{{ lvm_disk.device }}"
     number: 1
     part_type: primary
-    flags: [ lvm ]
+    flags: [lvm]
     state: present
   register: parted
   tags: lvm
 
-- name: fact
-  set_fact:
+- name: 'Stat lvm part fact'
+  ansible.builtin.set_fact:
     partnum: "{{ lvm_disk.device | regex_replace('^(.+\\d+n\\d+)$', '\\1p') }}{{ parted.partitions[0].num }}"
 
-- name: ensure LVM VG exists
-  lvg:
+- name: 'Ensure LVM VG exists'
+  community.general.lvg:
     vg: "{{ lvm_disk.lvm_vg }}"
     pvs: "{{ partnum }}"
   tags: lvm
 
-- name: create LVM LV
-  lvol:
+- name: 'Create LVM LV'
+  community.general.lvol:
     vg: "{{ lvm_disk.lvm_vg }}"
     lv: "{{ item.name }}"
     size: "{{ item.size }}"
@@ -64,8 +64,8 @@
     label: "{{ item.name }}"
   tags: lvm
 
-- name: Format partitions if requested
-  filesystem:
+- name: 'Format partitions if requested'
+  community.general.filesystem:
     dev: "/dev/{{ lvm_disk.lvm_vg }}/{{ item.name }}"
     fstype: "{{ item.filesystem }}"
   loop: "{{ lvm_disk.partitions }}"
@@ -73,8 +73,8 @@
     label: "{{ item.name }}"
   tags: mount
 
-- name: Mount up devices
-  mount:
+- name: 'Mount up devices'
+  ansible.posix.mount:
     path: "{{ item.mountpoint }}"
     src: "/dev/{{ lvm_disk.lvm_vg }}/{{ item.name }}"
     fstype: "{{ item.filesystem }}"

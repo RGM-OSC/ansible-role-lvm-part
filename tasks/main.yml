@@ -1,10 +1,9 @@
 ---
 # tasks file for role-lvm-partitionner
 # vim: bs=2 sw=2 expandtab:
-
-- name: execute role only if lvm_disk data structure is filled
-  include_tasks: lvm-mount.yml
+- name: 'Execute role only if lvm_disk data structure is filled'
+  ansible.builtin.include_tasks: lvm-mount.yml
   tags:
-  - lvm
-  - mount
+    - lvm
+    - mount
   when: lvm_disk is defined
